@@ -1,6 +1,11 @@
 const express = require('express')
 const app = express()
 const port = 8081
+const bodyParser = require('body-parser');
+const {User} = require("./models/User");
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 const mongoose = require('mongoose')
 mongoose.connect('mongodb+srv://dohyung:asd2464@loft.ornhmfo.mongodb.net/').then(() => console.log("Monggo DB Conected..."))
@@ -8,6 +13,21 @@ mongoose.connect('mongodb+srv://dohyung:asd2464@loft.ornhmfo.mongodb.net/').then
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
+})
+
+app.post('/register', (req,res) => {
+  // 회원 가입 시 필요한 정보를 받고 DB에 저장 처리
+
+  const user = new User(req.body)
+  console.log(req.body);
+
+  // mongo DB 메소드
+  user.save((err, userInfo) => {
+    if (err) return res.json({ success: false, err })
+    return res.status(200).json({
+      success: true
+    })
+  })
 })
 
 app.listen(port, () => {
