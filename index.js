@@ -12,21 +12,23 @@ mongoose.connect('mongodb+srv://dohyung:asd2464@loft.ornhmfo.mongodb.net/').then
   .catch(err => console.log(err))
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World!~')
 })
 
-app.post('/register', (req,res) => {
+app.post('/register', async(req,res) => {
   // 회원 가입 시 필요한 정보를 받고 DB에 저장 처리
 
   const user = new User(req.body)
   console.log(req.body);
 
   // mongo DB 메소드
-  user.save((err, userInfo) => {
-    if (err) return res.json({ success: false, err })
+  // https://www.inflearn.com/questions/805491 참고
+  const result = await user.save().then(()=>{
     return res.status(200).json({
       success: true
     })
+  }).catch((err) =>{
+    console.log(err);
   })
 })
 
