@@ -8,7 +8,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://dohyung:asd2464@loft.ornhmfo.mongodb.net/').then(() => console.log("Monggo DB Conected..."))
+const config = require("./config/key")
+
+mongoose.connect(config.mongoURI).then(() => console.log("Monggo DB Conected..."))
   .catch(err => console.log(err))
 
 app.get('/', (req, res) => {
