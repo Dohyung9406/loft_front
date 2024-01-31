@@ -48,8 +48,33 @@ userSchema.pre('save', function(next){
                 next();
             });
         });
+    } else {
+        next();
     }
 });
+
+userSchema.methods.comparePassword = function(plainPassword, cd) {
+    console.log("plainPassword : " + plainPassword);
+    console.log("this Password : " + this.password);
+    
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch){
+        if(err) return cb(err),
+        cb(numm, isMatch);
+    });
+}
+const jwt = require('jsonwebtoken');
+userSchema.methods.generateToken = function(cb) {
+    var user = this;
+    
+    //토큰 생성 처리
+    var token = jwt.sign(user._id, 'secretToken');
+
+    user.token = token;
+    user.save(function(err, user){
+        if(err) return cb(err);
+        cb(null, user);
+    });
+}
 
 const User = mongoose.model('User', userSchema);
 module.exports = {User};
