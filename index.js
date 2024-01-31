@@ -27,7 +27,6 @@ app.post('/register', async(req,res) => {
     await user.save();
     
     return res.status(200).json({success:true});
-
   } catch (err) {
     return res.status(400).send(err);
   }
@@ -59,7 +58,7 @@ app.post('/login', async (req,res) => {
     //토큰 생성
     user.generateToken((err, user) => {
       //토큰 쿠키에 저장
-      console.log("Token : " + user.token);
+      console.log("index Token : " + user.token);
       res.cookie("X_auth", user.token).status(200).json({loginSuccess: true, userId: user._id});
     });
 
