@@ -41,7 +41,6 @@ app.post('/login', async (req,res) => {
   try {
     // 이메일로 로그인 후 토큰 생성까지
     const user = await User.findOne({ email: req.body.email });
-    console.log("user : " + user);
 
     if (!user) {
       return res.json({
@@ -52,17 +51,18 @@ app.post('/login', async (req,res) => {
 
     //비밀번호 확인
     user.comparePassword(req.body.password, (err, isMatch) =>{
-      console.log("isMatch : " + isMatch);
       if(!isMatch) {
         return res.json({loginSuccess: false, message:"비밀번호 틀렸습니다."});
       }
     });
     
     //토큰 생성
-    const token = await user.generateToken();
+    user.generateToken((err, user) => {
+      //토큰 쿠키에 저장
+      console.log("Token : " + user.token);
+      res.cookie("X_auth", user.token).status(200).json({loginSuccess: true, userId: user._id});
+    });
 
-    //토큰 쿠키에 저장
-    res.cookie("X_auth", token).status(200).json({loginSuccess: true, userId: user._id}); 
   } catch (err) {
     return res.status(400).send(err);
   }
