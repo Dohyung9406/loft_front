@@ -56,11 +56,8 @@ app.post('/login', async (req,res) => {
     });
     
     //토큰 생성
-    user.generateToken((err, user) => {
-      //토큰 쿠키에 저장
-      console.log("index Token : " + user.token);
-      res.cookie("X_auth", user.token).status(200).json({loginSuccess: true, userId: user._id});
-    });
+    const userToken = await user.generateToken();
+    res.cookie("X_auth", userToken.token).status(200).json({loginSuccess: true, userId: user._id});
 
   } catch (err) {
     return res.status(400).send(err);
